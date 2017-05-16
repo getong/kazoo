@@ -245,6 +245,8 @@ guess_type_by_default(?MOD_FUN_ARGS('ecallmgr_config', 'get_ne_binaries', [_Key,
     [<<"string">>];
 guess_type_by_default(?MOD_FUN_ARGS('ecallmgr_config', F, [_Key, Default])) ->
     guess_type(F, Default);
+guess_type_by_default(?MOD_FUN_ARGS('ecallmgr_config', F, [_Key, Default, _Node])) ->
+    guess_type(F, Default);
 guess_type_by_default(?MOD_FUN_ARGS('kz_json', 'new', [])) -> <<"object">>;
 guess_type_by_default(?MOD_FUN_ARGS('kz_json', 'from_list', _Args)) -> <<"object">>;
 guess_type_by_default(?MOD_FUN_ARGS('kz_json', 'from_list_recursive', _Args)) -> <<"object">>;
@@ -336,7 +338,17 @@ default_value(?MOD_FUN_ARGS('kz_term', 'to_integer', [Arg])) ->
     default_value(Arg);
 default_value(?MOD_FUN_ARGS(M, 'type', [])) ->
     default_value(M:type());
-default_value(?MOD_FUN_ARGS('ecallmgr_config', 'get', [_Key, Default])) ->
+default_value(?MOD_FUN_ARGS('ecallmgr_config', 'get', [_Key, Default|_])) ->
+    default_value(Default);
+default_value(?MOD_FUN_ARGS('ecallmgr_config', 'get_jsons', [_Key, Default|_])) ->
+    default_value(Default);
+default_value(?MOD_FUN_ARGS('ecallmgr_config', 'get_integer', [_Key, Default|_])) ->
+    default_value(Default);
+default_value(?MOD_FUN_ARGS('ecallmgr_config', 'get_boolean', [_Key, Default|_])) ->
+    default_value(Default);
+default_value(?MOD_FUN_ARGS('ecallmgr_config', 'is_true', [_Key, Default|_])) ->
+    default_value(Default);
+default_value(?MOD_FUN_ARGS('ecallmgr_config', 'get_default', [_Key, Default|_])) ->
     default_value(Default);
 default_value(?MOD_FUN_ARGS('ecallmgr_config', 'get_ne_binaries', [_Key, Default])) ->
     default_value(Default);
