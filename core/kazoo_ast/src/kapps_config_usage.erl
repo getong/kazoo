@@ -77,7 +77,7 @@ static_fields(ConfigType, Name, JObj) ->
 
 -spec process_project() -> kz_json:object().
 process_project() ->
-    io:format("processing kapps_config/kapps_account_config usage: "),
+    io:format("processing kapps_config/kapps_account_config/ecallmgr_config usage: "),
     Options = [{'expression', fun expression_to_schema/2}
               ,{'module', fun print_dot/2}
               ,{'accumulator', kz_json:new()}
@@ -105,7 +105,7 @@ expression_to_schema(?MOD_FUN_ARGS('kapps_config', 'set_default', _), Schemas) -
     Schemas;
 expression_to_schema(?MOD_FUN_ARGS('kapps_config', 'set_node', _), Schemas) ->
     Schemas;
-expression_to_schema(?MOD_FUN_ARGS(Source = 'kapps_config', F, Args), Schemas) ->
+expression_to_schema(?MOD_FUN_ARGS(Source='kapps_config', F, Args), Schemas) ->
     config_to_schema(Source, F, Args, Schemas);
 expression_to_schema(?MOD_FUN_ARGS('ecallmgr_config', 'set', _), Schemas) ->
     Schemas;
@@ -113,9 +113,9 @@ expression_to_schema(?MOD_FUN_ARGS('ecallmgr_config', 'set_default', _), Schemas
     Schemas;
 expression_to_schema(?MOD_FUN_ARGS('ecallmgr_config', 'set_node', _), Schemas) ->
     Schemas;
-expression_to_schema(?MOD_FUN_ARGS(Source = 'ecallmgr_config', F, Args), Schemas) ->
+expression_to_schema(?MOD_FUN_ARGS(Source='ecallmgr_config', F, Args), Schemas) ->
     config_to_schema(Source, F, [?BINARY_STRING(<<"ecallmgr">>, 0) | Args], Schemas);
-expression_to_schema(?MOD_FUN_ARGS(Source = 'kapps_account_config', F='get_global', Args), Schemas) ->
+expression_to_schema(?MOD_FUN_ARGS(Source='kapps_account_config', F='get_global', Args), Schemas) ->
     config_to_schema(Source, F, Args, Schemas);
 expression_to_schema(_Expression, Schema) ->
     Schema.
@@ -264,7 +264,8 @@ guess_properties(Document, SourceModule, Key=?NE_BINARY, Type, Default) ->
     case undefined =:= Description of
         false -> ok;
         true ->
-            io:format("\nYou need to add the key \"~s\" in ~s\n", [DescriptionKey, ?SYSTEM_CONFIG_DESCRIPTIONS]),
+            io:format("\nYou need to add the key \"~s\" in ~s\n"
+                     ,[DescriptionKey, ?SYSTEM_CONFIG_DESCRIPTIONS]),
             halt(1)
     end,
     kz_json:from_list(
