@@ -30,6 +30,8 @@ def is_root(keys):
     return '$schema' in keys and '_id' in keys
 def is_a_special_key(key):
     return key in ['properties', 'default_caller_id_number']
+def has_a_special_key(keys):
+    return '$ref' in keys
 class BadDefaultType(Exception):
     """default does not match type"""
 def bad_default_type(json_file, current_key, Type, Default):
@@ -62,7 +64,7 @@ def check_defaults(json_file, current_key, JSON):
     keys = JSON.keys()
     if 'description' in keys and not is_root(keys):
         if 'default' not in keys or 'type' not in keys:
-            if not is_a_special_key(current_key):
+            if not is_a_special_key(current_key) and not has_a_special_key(keys):
                 missing_default_or_type(json_file, current_key, JSON)
         else:
             Type = JSON['type']
