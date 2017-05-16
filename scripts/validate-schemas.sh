@@ -11,9 +11,34 @@ import sys
 from jsonschema.validators import validator_for
 
 
+class MissingKeyError(Exception):
+    """One of these keys is missing from the JSON: 'default', 'type'"""
+def is_root(keys):
+    return '$schema' in keys and '_id' in keys
+def is_a_special_key(key):
+    return key in ['default_caller_id_number']
+
+def check_defaults(json_file, current_key, JSON):
+    keys = JSON.keys()
+    if 'description' in keys \
+       and ('default' not in keys or 'type' not in keys) \
+       and not is_root(keys) \
+       and not is_a_special_key(current_key):
+        print(json_file)
+        print(MissingKeyError.__doc__)
+        print('at:', current_key)
+        for key in keys:
+            print('\t', key, ':', JSON[key])
+        # raise MissingKeyError
+    for key in keys:
+        value = JSON[key]
+        if isinstance(value, dict):
+            check_defaults(json_file, key, value)
+
 def validate(json_file):
-    with open(json_file, 'r') as fd:
+    with open(json_file) as fd:
         JSON = json.load(fd)
+    check_defaults(json_file, '', JSON)
     try:
         validator = validator_for(JSON)
         validator.check_schema(JSON)
