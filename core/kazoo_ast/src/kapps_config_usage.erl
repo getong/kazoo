@@ -194,26 +194,26 @@ key_to_key_path(?BINARY_MATCH(K)) ->
     end.
 
 guess_type('get_list', Default) -> guess_type_by_default(Default);
-guess_type('is_true', _Default) -> <<"boolean">>;
-guess_type('get_is_true', _Default) -> <<"boolean">>;
-guess_type('get_boolean', _Default) -> <<"boolean">>;
+guess_type('is_true', _) -> <<"boolean">>;
+guess_type('get_is_true', _) -> <<"boolean">>;
+guess_type('get_boolean', _) -> <<"boolean">>;
 guess_type('get', Default) -> guess_type_by_default(Default);
 guess_type('get_current', Default) -> guess_type_by_default(Default);
 guess_type('fetch', Default) -> guess_type_by_default(Default);
 guess_type('get_non_empty', Default) -> guess_type_by_default(Default);
-guess_type('get_binary', _Default) -> <<"string">>;
-guess_type('get_ne_binary', _Default) -> <<"string">>;
-guess_type('get_ne_binaries', _Default) -> [<<"string">>];
-guess_type('get_pos_integer', _Default) -> <<"pos_integer">>;
-guess_type('get_non_neg_integer', _Default) -> <<"non_neg_integer">>;
-guess_type('get_json', _Default) -> <<"object">>;
-guess_type('get_jsons', _Default) -> [<<"object">>];
-guess_type('get_string', _Default) -> <<"string">>;
-guess_type('get_integer', _Default) -> <<"integer">>;
-guess_type('get_float', _Default) -> <<"float">>;
-guess_type('get_atom', _Default) -> <<"string">>;
+guess_type('get_binary', _) -> <<"string">>;
+guess_type('get_ne_binary', _) -> <<"string">>;
+guess_type('get_ne_binaries', _) -> [<<"string">>];
+guess_type('get_pos_integer', _) -> <<"pos_integer">>;
+guess_type('get_non_neg_integer', _) -> <<"non_neg_integer">>;
+guess_type('get_json', _) -> <<"object">>;
+guess_type('get_jsons', _) -> [<<"object">>];
+guess_type('get_string', _) -> <<"string">>;
+guess_type('get_integer', _) -> <<"integer">>;
+guess_type('get_float', _) -> <<"float">>;
+guess_type('get_atom', _) -> <<"string">>;
 guess_type('get_global', Default) -> guess_type_by_default(Default);
-guess_type('set_default', _Default) -> 'undefined';
+guess_type('set_default', _) -> 'undefined';
 guess_type('set', Default) -> guess_type_by_default(Default);
 guess_type('set_string', _) -> <<"string">>;
 guess_type('set_node', Default) -> guess_type_by_default(Default);
@@ -370,7 +370,7 @@ default_value(?MOD_FUN_ARGS('kapps_account_config', 'get_global', [_Account, _Ca
     default_value(Default);
 default_value(?MOD_FUN_ARGS('kapps_account_config', 'get', [_Account, _Category, _Key, Default])) ->
     default_value(Default);
-default_value(?MOD_FUN_ARGS('kapps_account_config', 'get_ne_binary', [_Category, _Key, Default])) ->
+default_value(?MOD_FUN_ARGS('kapps_account_config', 'get_ne_binary', [_Account, _Category, _Key, Default])) ->
     default_value(Default);
 default_value(?MOD_FUN_ARGS(_M, _F, _Args)) ->
     ?UNKNOWN_DEFAULT;

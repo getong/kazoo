@@ -26,17 +26,15 @@
 -define(CCV(Key), [<<"Custom-Channel-Vars">>, Key]).
 
 -define(DEFAULT_AMQP_EXCHANGE_OPTIONS
-       ,kz_json:from_list([{<<"passive">>, 'true'}])
-       ).
+       ,kz_json:from_list([{<<"passive">>, 'true'}])).
 
 -define(RULES_HONOR_DIVERSION
-       ,kapps_config:get_is_true(?SS_CONFIG_CAT, <<"cid_rules_honor_diversions">>, 'false')
-       ).
+       ,kapps_config:get_is_true(?SS_CONFIG_CAT, <<"cid_rules_honor_diversions">>, 'false')).
 
 -define(RESOURCE_TYPES_HANDLED, [<<"audio">>, <<"video">>, <<"sms">>]).
 
 -define(DEFAULT_EMERGENCY_CID_NUMBER,
-        kapps_config:get_non_empty(?SS_CONFIG_CAT, <<"default_emergency_cid_number">>)).
+        kapps_config:get_ne_binary(?SS_CONFIG_CAT, <<"default_emergency_cid_number">>)).
 
 -define(STEPSWITCH_HRL, 'true').
 -endif.
