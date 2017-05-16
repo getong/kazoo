@@ -13,7 +13,7 @@ from jsonschema.validators import validator_for
 
 class MissingDefaultKeyError(Exception):
     """A 'default' key is missing from the JSON"""
-class MissingTypetKeyError(Exception):
+class MissingTypeKeyError(Exception):
     """A 'type' key is missing from the JSON"""
 def missing_default_or_type(json_file, current_key, JSON):
     print(json_file)
@@ -24,7 +24,8 @@ def missing_default_or_type(json_file, current_key, JSON):
     if 'default' not in keys:
         print(MissingDefaultKeyError.__doc__)
     if 'type' not in keys:
-        raise MissingTypetKeyError
+        print(MissingTypeKeyError.__doc__)
+        raise MissingTypeKeyError
 def is_root(keys):
     return '$schema' in keys and '_id' in keys
 def is_a_special_key(key):
