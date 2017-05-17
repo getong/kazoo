@@ -32,7 +32,6 @@
 -export([get_float/2, get_float/3, get_float/4]).
 -export([get_is_false/2, get_is_false/3, get_is_false/4]).
 -export([get_is_true/2, get_is_true/3, get_is_true/4]).
--export([get_non_empty/2, get_non_empty/3, get_non_empty/4]).
 -export([get_ne_binary/2, get_ne_binary/3, get_ne_binary/4]).
 -export([get_ne_binaries/2, get_ne_binaries/3, get_ne_binaries/4]).
 -export([get_ne_binary_or_ne_binaries/2, get_ne_binary_or_ne_binaries/3, get_ne_binary_or_ne_binaries/4]).
@@ -315,27 +314,6 @@ get_is_true(Category, Key, Default) ->
     get_is_true(Category, Key, Default, kz_term:to_binary(node())).
 get_is_true(Category, Key, Default, Node) ->
     kz_term:is_true(get(Category, Key, Default, Node)).
-
-%%-----------------------------------------------------------------------------
-%% @public
-%% @doc
-%% Get a configuration key for a given category and cast it as a is_true
-%% @end
-%%-----------------------------------------------------------------------------
--spec get_non_empty(config_category(), config_key()) -> _ | 'undefined'.
--spec get_non_empty(config_category(), config_key(), Default) -> _ | Default.
--spec get_non_empty(config_category(), config_key(), Default, ne_binary()) -> _ | Default.
-
-get_non_empty(Category, Key) ->
-    get_non_empty(Category, Key, 'undefined').
-get_non_empty(Category, Key, Default) ->
-    get_non_empty(Category, Key, Default, kz_term:to_binary(node())).
-get_non_empty(Category, Key, Default, Node) ->
-    Value = get(Category, Key, Default, Node),
-    case kz_term:is_empty(Value) of
-        'true' -> Default;
-        'false' -> Value
-    end.
 
 -spec get_ne_binary_or_ne_binaries(config_category(), config_key()) -> api_ne_binary() | ne_binaries().
 -spec get_ne_binary_or_ne_binaries(config_category(), config_key(), Default) -> ne_binary() | ne_binaries() | Default.
