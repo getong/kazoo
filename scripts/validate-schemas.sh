@@ -31,7 +31,8 @@ def is_root(keys):
 def is_a_special_key(key):
     return key in ['properties', 'default_caller_id_number']
 def has_a_special_key(keys):
-    return '$ref' in keys
+    special_in = ['$ref', 'oneOf']
+    return set() != set(keys).intersection(set(special_in))
 class BadDefaultType(Exception):
     """default does not match type"""
 def bad_default_type(json_file, current_key, Type, Default):
