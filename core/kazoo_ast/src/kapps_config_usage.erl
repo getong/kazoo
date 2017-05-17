@@ -206,6 +206,7 @@ guess_type('get_ne_binary', _) -> <<"string">>;
 guess_type('get_ne_binaries', _) -> [<<"string">>];
 guess_type('get_pos_integer', _) -> <<"pos_integer">>;
 guess_type('get_non_neg_integer', _) -> <<"non_neg_integer">>;
+guess_type('get_ne_binary_or_ne_binaries', _) -> {<<"string">>, [<<"string">>]};
 guess_type('get_json', _) -> <<"object">>;
 guess_type('get_jsons', _) -> [<<"object">>];
 guess_type('get_string', _) -> <<"string">>;
@@ -286,6 +287,10 @@ guess_properties(Document, Source, [_Key, ?FIELD_PROPERTIES | Rest], Type, Defau
 
 type([undefined]) ->
     [{?FIELD_TYPE, <<"array">>}];
+type({Type, [OrArrayType]}) ->
+    [{?FIELD_TYPE, [Type, <<"array">>]}
+    ,{<<"items">>, kz_json:from_list([{?FIELD_TYPE, OrArrayType}])}
+    ];
 type([Type]) ->
     [{?FIELD_TYPE, <<"array">>}
     ,{<<"items">>, kz_json:from_list([{?FIELD_TYPE, Type}])}

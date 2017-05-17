@@ -35,6 +35,7 @@
 -export([get_non_empty/2, get_non_empty/3, get_non_empty/4]).
 -export([get_ne_binary/2, get_ne_binary/3, get_ne_binary/4]).
 -export([get_ne_binaries/2, get_ne_binaries/3, get_ne_binaries/4]).
+-export([get_ne_binary_or_ne_binaries/2, get_ne_binary_or_ne_binaries/3, get_ne_binary_or_ne_binaries/4]).
 
 -export([set_string/3
         ,set_integer/3
@@ -334,6 +335,29 @@ get_non_empty(Category, Key, Default, Node) ->
     case kz_term:is_empty(Value) of
         'true' -> Default;
         'false' -> Value
+    end.
+
+-spec get_ne_binary_or_ne_binaries(config_category(), config_key()) -> api_ne_binary() | ne_binaries().
+-spec get_ne_binary_or_ne_binaries(config_category(), config_key(), Default) -> ne_binary() | ne_binaries() | Default.
+-spec get_ne_binary_or_ne_binaries(config_category(), config_key(), Default, ne_binary()) -> ne_binary() | ne_binaries() | Default.
+
+get_ne_binary_or_ne_binaries(Category, Key) ->
+    get_ne_binary_or_ne_binaries(Category, Key, 'undefined').
+get_ne_binary_or_ne_binaries(Category, Key, Default) ->
+    get_ne_binary_or_ne_binaries(Category, Key, Default, kz_term:to_binary(node())).
+get_ne_binary_or_ne_binaries(Category, Key, Default, Node) ->
+    ValueOrValues = get(Category, Key, Default, Node),
+    case kz_term:is_empty(ValueOrValues) of
+        'true' -> Default;
+        'false' ->
+            case ValueOrValues of
+                Value=?NE_BINARY -> Value;
+                Values when is_list(Values) ->
+                    [kz_term:to_binary(Value)
+                     || Value <- Values,
+                        kz_term:is_not_empty(Value)
+                    ]
+            end
     end.
 
 -spec get_ne_binary(config_category(), config_key()) -> api_ne_binary().
