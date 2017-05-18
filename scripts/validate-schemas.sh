@@ -25,7 +25,7 @@ def missing_default_or_type(json_file, current_key, JSON):
         print(MissingDefaultKeyError.__doc__)
     if 'type' not in keys:
         print(MissingTypeKeyError.__doc__)
-        raise MissingTypeKeyError
+        # raise MissingTypeKeyError ## FIXME: uncomment this and fix the errors
 def is_root(keys):
     return '$schema' in keys and '_id' in keys
 def is_a_special_key(key):
@@ -41,7 +41,7 @@ def bad_default_type(json_file, current_key, Type, Default):
     print('at:', current_key)
     print('type:', Type)
     print('default:', Default)
-    # raise BadDefaultType
+    raise BadDefaultType
 
 def default_matches_type(Default, Type):
     if Type == 'object' and isinstance(Default, dict):
