@@ -7035,17 +7035,17 @@
                                         "attempts": {
                                             "default": 5,
                                             "description": "ananke attempts",
-                                            "type": "string"
+                                            "type": "integer"
                                         },
                                         "interval_s": {
                                             "default": 300,
                                             "description": "ananke interval in seconds",
-                                            "type": "string"
+                                            "type": "integer"
                                         },
                                         "timeout_s": {
                                             "default": 20,
                                             "description": "ananke timeout in seconds",
-                                            "type": "string"
+                                            "type": "integer"
                                         }
                                     }
                                 }
@@ -8023,7 +8023,8 @@
                     "type": "string"
                 },
                 "provisioning_type": {
-                    "description": "crossbar.devices provisioning type"
+                    "description": "crossbar.devices provisioning type",
+                    "type": "string"
                 },
                 "provisioning_url": {
                     "description": "crossbar.devices provisioning url",
@@ -8555,8 +8556,9 @@
                     "type": "string"
                 },
                 "default_ringback": {
+                    "default": "%(2000,4000,440,480)",
                     "description": "ecallmgr default ringback",
-                    "type": "object"
+                    "type": "string"
                 },
                 "event_stream_idle_alert": {
                     "default": 0,
@@ -8633,7 +8635,11 @@
                     "type": "object"
                 },
                 "fs_reconnect_cmds": {
-                    "description": "ecallmgr fs reconnect cmds"
+                    "description": "ecallmgr fs reconnect cmds",
+                    "items": {
+                        "type": "object"
+                    },
+                    "type": "array"
                 },
                 "gateways": {
                     "default": {},
@@ -8759,7 +8765,8 @@
                     "type": "boolean"
                 },
                 "sofia_conf": {
-                    "description": "ecallmgr sofia conf"
+                    "description": "ecallmgr sofia conf",
+                    "type": "boolean"
                 },
                 "tcp_packet_type": {
                     "default": 2,
@@ -9832,6 +9839,9 @@
                 "default_to": {
                     "default": "",
                     "description": "notify.cnam_request default to",
+                    "items": {
+                        "type": "string"
+                    },
                     "type": "string"
                 }
             },
@@ -9843,6 +9853,9 @@
                 "default_to": {
                     "default": "",
                     "description": "notify.deregister default to",
+                    "items": {
+                        "type": "string"
+                    },
                     "type": "string"
                 },
                 "html_content_transfer_encoding": {
@@ -9913,6 +9926,9 @@
                 "default_to": {
                     "default": "",
                     "description": "notify.first_occurrence default to",
+                    "items": {
+                        "type": "string"
+                    },
                     "type": "string"
                 },
                 "html_content_transfer_encoding": {
@@ -9945,6 +9961,9 @@
                 "default_to": {
                     "default": "",
                     "description": "notify.new_account default to",
+                    "items": {
+                        "type": "string"
+                    },
                     "type": "string"
                 },
                 "html_content_transfer_encoding": {
@@ -9966,6 +9985,9 @@
                 "default_to": {
                     "default": "",
                     "description": "notify.password_recovery default to",
+                    "items": {
+                        "type": "string"
+                    },
                     "type": "string"
                 },
                 "html_content_transfer_encoding": {
@@ -9991,6 +10013,9 @@
                 "default_to": {
                     "default": "",
                     "description": "notify.port_cancel default to",
+                    "items": {
+                        "type": "string"
+                    },
                     "type": "string"
                 }
             },
@@ -10006,6 +10031,9 @@
                 "default_to": {
                     "default": "",
                     "description": "notify.port_request default to",
+                    "items": {
+                        "type": "string"
+                    },
                     "type": "string"
                 }
             },
@@ -10015,7 +10043,14 @@
             "description": "Schema for notify.port_request_admin system_config",
             "properties": {
                 "default_to": {
-                    "description": "notify.port_request_admin default to"
+                    "description": "notify.port_request_admin default to",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "string",
+                        "array"
+                    ]
                 }
             },
             "type": "object"
@@ -10026,6 +10061,9 @@
                 "default_to": {
                     "default": "",
                     "description": "notify.ported default to",
+                    "items": {
+                        "type": "string"
+                    },
                     "type": "string"
                 },
                 "send_from_admin_email": {
@@ -10042,6 +10080,9 @@
                 "default_to": {
                     "default": "",
                     "description": "notify.system_alert default to",
+                    "items": {
+                        "type": "string"
+                    },
                     "type": "string"
                 },
                 "enable_email_alerts": {
@@ -10072,6 +10113,9 @@
                 "default_to": {
                     "default": "",
                     "description": "notify.topup default to",
+                    "items": {
+                        "type": "string"
+                    },
                     "type": "string"
                 },
                 "html_content_transfer_encoding": {
@@ -10093,6 +10137,9 @@
                 "default_to": {
                     "default": "",
                     "description": "notify.transaction default to",
+                    "items": {
+                        "type": "string"
+                    },
                     "type": "string"
                 },
                 "html_content_transfer_encoding": {
@@ -10117,7 +10164,14 @@
                     "type": "boolean"
                 },
                 "default_to": {
-                    "description": "notify.voicemail_full default to"
+                    "description": "notify.voicemail_full default to",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "string",
+                        "array"
+                    ]
                 }
             },
             "type": "object"
@@ -10671,7 +10725,8 @@
                     "type": "object"
                 },
                 "provisioning_type": {
-                    "description": "provisioner provisioning type"
+                    "description": "provisioner provisioning type",
+                    "type": "string"
                 },
                 "provisioning_url": {
                     "description": "provisioner provisioning url",
@@ -10737,6 +10792,7 @@
             "description": "Schema for reorder system_config",
             "properties": {
                 "assume_inbound_e164": {
+                    "default": false,
                     "description": "reorder assume inbound e164",
                     "type": "boolean"
                 },
@@ -11075,7 +11131,8 @@
                     "type": "array"
                 },
                 "default_emergency_cid_number": {
-                    "description": "stepswitch default emergency cid number"
+                    "description": "stepswitch default emergency cid number",
+                    "type": "string"
                 },
                 "default_formatters": {
                     "description": "stepswitch default formatters"
@@ -11120,7 +11177,7 @@
                 "deny_emergency_bridge_code": {
                     "default": 486,
                     "description": "stepswitch deny emergency bridge code",
-                    "type": "string"
+                    "type": "integer"
                 },
                 "deny_emergency_bridge_media": {
                     "default": "prompt://system_media/stepswitch-emergency_not_configured/",
