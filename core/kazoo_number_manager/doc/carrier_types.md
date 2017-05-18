@@ -1,12 +1,12 @@
 # Carrier Types
 
-Every number in the system has an internal property called 'pvt_carrier_module' that defines which carrier module is used to manage the number.  The carrier module can modify how the number behaves in the system.
+Every number in the system has an internal property called `pvt_carrier_module` that defines which carrier module is used to manage the number.  The carrier module can modify how the number behaves in the system.
 
 ## Manual Number Management
 
-### knm_local
+### `knm_local`
 
-This module is responsible for 'local' numbers, that is number that only belongs to one account (local to that account) and not the system.  These numbers are expected to be added by the admin of the account (local admin) for use with that account only.  Furthermore, it is expected the number is owned by the local admin and not the system operators.  For example, if an account was using its own carriers (local resources) then all numbers would be owned by the local admin and not participate in any of the automatic facilities provided by Kazoo.
+This module is responsible for "local" numbers, that is number that only belongs to one account (local to that account) and not the system.  These numbers are expected to be added by the admin of the account (local admin) for use with that account only.  Furthermore, it is expected the number is owned by the local admin and not the system operators.  For example, if an account was using its own carriers (local resources) then all numbers would be owned by the local admin and not participate in any of the automatic facilities provided by Kazoo.
 
 These special numbers do not behave like any other numbers in the system:
 
