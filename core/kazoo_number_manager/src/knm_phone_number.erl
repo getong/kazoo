@@ -58,6 +58,7 @@
 -endif.
 
 -include("knm.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 %% Used by from_json/1
 -define(DEFAULT_FEATURES, kz_json:new()).
@@ -811,8 +812,8 @@ setters_pn(PN, Routines) ->
         #knm_phone_number{}=NewPN -> {'ok', NewPN}
     catch
         'throw':{'stop', Error} -> Error;
-        'error':'function_clause' ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION('error', 'function_clause', Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             {FName, Arg} =
                 case ST of
                     [{'lists', 'foldl', [Name|_aPN], Arg2}|_] -> {Name, Arg2};

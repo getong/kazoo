@@ -74,6 +74,7 @@
 -export([check_release/0]).
 
 -include("kazoo_apps.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -type bind() :: 'migrate' | 'refresh' | 'refresh_account' | 'register_views'.
 
@@ -1362,8 +1363,8 @@ check_release() ->
         'throw':Error ->
             lager:error("check_release/0 failed: ~p", [Error]),
             init:stop(1);
-        _E:_R ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(_E, _R, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:error("check_release/0 crashed: ~s: ~p", [_E, _R]),
             kz_util:log_stacktrace(ST),
             init:stop(1)

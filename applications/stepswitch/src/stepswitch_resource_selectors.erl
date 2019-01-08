@@ -8,6 +8,7 @@
 -export([endpoints/2]).
 
 -include("stepswitch_resource_selectors.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(MOD_NAME, <<"resource_selectors">>).
 -define(SRS_CONFIG_CAT, <<?SS_CONFIG_CAT/binary, ".", ?MOD_NAME/binary>>).
@@ -85,8 +86,8 @@ rule_to_resource(Rule, Resources, Number, OffnetJObj, SelectorsDb) ->
                       ),
             Res
     catch
-        'error':R ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION('error', R, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:error("failed to run module: ~p, error: ~p",[Module, R]),
             kz_util:log_stacktrace(ST),
             [];

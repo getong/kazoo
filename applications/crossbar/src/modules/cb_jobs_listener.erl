@@ -22,6 +22,7 @@
 
 -include("crossbar.hrl").
 -include_lib("kazoo_number_manager/include/knm_phone_number.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(SERVER, ?MODULE).
 
@@ -182,8 +183,8 @@ create_number(Job, AccountId, AuthAccountId, CarrierModule, DID) ->
         {Failure, JObj} ->
             update_with_failure(Job, AccountId, DID, Failure, JObj)
     catch
-        E:_R ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(E, _R, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             kz_util:log_stacktrace(ST),
             lager:debug("exception creating number ~s for account ~s: ~s: ~p"
                        ,[DID, AccountId, E, _R]),

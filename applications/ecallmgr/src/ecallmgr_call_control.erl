@@ -70,6 +70,7 @@
         ]).
 
 -include("ecallmgr.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(SERVER, ?MODULE).
 
@@ -1077,8 +1078,8 @@ execute_control_request(Cmd, #state{node=Node
             send_error_resp(CallId, Cmd, Msg),
             Srv ! {'force_queue_advance', CallId},
             'ok';
-        'error':{'badmatch', {'error', ErrMsg}} ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION('error', {'badmatch', {'error', ErrMsg}}, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:debug("invalid command ~s: ~p", [Application, ErrMsg]),
             kz_util:log_stacktrace(ST),
             maybe_send_error_resp(CallId, Cmd),
@@ -1096,8 +1097,8 @@ execute_control_request(Cmd, #state{node=Node
             send_error_resp(CallId, Cmd, Msg),
             Srv ! {'force_queue_advance', CallId},
             'ok';
-        _A:_B ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(_A, _B, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:debug("exception (~s) while executing ~s: ~p", [_A, Application, _B]),
             kz_util:log_stacktrace(ST),
             send_error_resp(CallId, Cmd),

@@ -52,6 +52,7 @@
 
 -include("callflow.hrl").
 -include_lib("kazoo_stdlib/include/kazoo_json.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(SERVER, ?MODULE).
 
@@ -794,8 +795,8 @@ cf_module_task(CFModule, Data, Call, AMQPConsumer) ->
     kz_util:put_callid(kapps_call:call_id_direct(Call)),
     try CFModule:handle(Data, Call)
     catch
-        _E:R ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(_E, R, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:info("action ~s died unexpectedly (~s): ~p", [CFModule, _E, R]),
             kz_util:log_stacktrace(ST),
             throw(R)

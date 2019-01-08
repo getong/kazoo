@@ -12,6 +12,7 @@
 -export([init/0, handle_req/2]).
 
 -include("notify.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(DEFAULT_TEXT_TMPL, 'notify_fax_inbound_error_to_email_text_tmpl').
 -define(DEFAULT_HTML_TMPL, 'notify_fax_inbound_error_to_email_html_tmpl').
@@ -72,10 +73,10 @@ send(JObj, AcctObj) ->
                                ], JObj, []),
     try build_and_send_email(TxtBody, HTMLBody, Subject, Emails, props:filter_empty(Props))
     catch
-        C:R ->
+        ?EXCEPTION(C, R, Stacktrace) ->
             Msg = io_lib:format("failed: ~s:~p", [C, R]),
             lager:debug(Msg),
-            ST = erlang:get_stacktrace(),
+            ST = ?GET_STACK(Stacktrace),
             kz_util:log_stacktrace(ST),
             {'error', Msg}
     end.

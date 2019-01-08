@@ -31,6 +31,7 @@
 -include_lib("kazoo_stdlib/include/kz_databases.hrl").
 -include_lib("kazoo_documents/include/kazoo_documents.hrl").
 -include_lib("kazoo_stdlib/include/kazoo_json.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 
 -type extra_validator() :: fun((jesse:json_term(), jesse_state:state()) -> jesse_state:state()).
@@ -848,9 +849,9 @@ default_object(Schema) ->
                        ),
             kz_json:new()
     catch
-        _Ex:_Err ->
+        ?EXCEPTION(_Ex, _Err, Stacktrace) ->
             lager:error("exception getting schema default ~p : ~p", [_Ex, _Err]),
-            kz_util:log_stacktrace(erlang:get_stacktrace()),
+            kz_util:log_stacktrace(?GET_STACK(Stacktrace)),
             kz_json:new()
     end.
 

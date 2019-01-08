@@ -49,6 +49,7 @@
         ]).
 
 -include("teletype.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(TEMPLATE_RENDERING_ORDER, [{?TEXT_PLAIN, 3}
                                   ,{?TEXT_HTML, 2}
@@ -179,8 +180,8 @@ relay_email(To, From, {_Type
         'error':'missing_from' ->
             lager:warning("no From address: ~s: ~p", [From, Addresses]),
             {'error', 'missing_from'};
-        _E:_R ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(_E, _R, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:warning("failed to encode email: ~s: ~p", [_E, _R]),
             kz_util:log_stacktrace(ST),
             {'error', 'email_encoding_failed'}

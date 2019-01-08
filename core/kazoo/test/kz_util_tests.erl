@@ -10,6 +10,9 @@
 
 -include_lib("kazoo_stdlib/include/kz_types.hrl").
 -include_lib("kazoo_stdlib/include/kz_databases.hrl").
+-ifdef(OTP_RELEASE).
+-compile({nowarn_deprecated_function, [{erlang, get_stacktrace, 0}]}).
+-endif.
 
 -ifdef(PROPER).
 -include_lib("proper/include/proper.hrl").

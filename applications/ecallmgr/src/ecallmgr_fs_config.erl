@@ -22,6 +22,7 @@
 -define(SERVER, ?MODULE).
 
 -include("ecallmgr.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -record(state, {node :: atom()
                ,options = [] :: kz_term:proplist()
@@ -152,8 +153,8 @@ handle_config_req(Node, FetchId, ConfFile, FSData) ->
     kz_util:put_callid(FetchId),
     try process_config_req(Node, FetchId, ConfFile, FSData)
     catch
-        _E:_R ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(_E, _R, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:info("failed to process config request for ~s: ~s: ~p", [ConfFile, _E, _R]),
             kz_util:log_stacktrace(ST),
             config_req_not_handled(Node, FetchId, ConfFile)

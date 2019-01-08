@@ -37,6 +37,7 @@
         ]).
 
 -include("konami.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(WSD_ID, {'file', <<(get('callid'))/binary, "_transfer">>}).
 
@@ -136,8 +137,8 @@ handle(Data, Call) ->
         _ -> 'ok'
     catch
         'exit':'normal' -> 'ok';
-        _E:_R ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(_E, _R, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:info("statem terminated abnormally: ~s: ~p", [_E, _R]),
             kz_util:log_stacktrace(ST)
     end.

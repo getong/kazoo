@@ -107,6 +107,7 @@
         ]).
 
 -include("crossbar.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(KEY_ACCEPT_CHARGES, <<"accept_charges">>).
 
@@ -898,8 +899,8 @@ validate_request_data(SchemaJObj, Context, OnSuccess, OnFailure, _SchemaRequired
             lager:debug("validation errors but not strictly validating, trying to fix request"),
             maybe_fix_js_types(SchemaJObj, Context, OnSuccess, OnFailure, Errors)
     catch
-        'error':'function_clause' ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION('error', 'function_clause', Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:debug("function clause failure"),
             kz_util:log_stacktrace(ST),
             Context#cb_context{resp_status = 'fatal'

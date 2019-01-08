@@ -9,6 +9,7 @@
 -export([handle/2]).
 
 -include("konami.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -spec handle(kz_term:api_object(), kapps_call:call()) -> 'ok'.
 handle('undefined', _Call) ->
@@ -31,8 +32,8 @@ handle(Metaflow, Call) ->
         _Other ->
             lager:debug("finished handling metaflow for konami_~s: ~p", [M, _Other])
     catch
-        _E:_R ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(_E, _R, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:debug("failed to exe metaflow 'konami_~s': ~s: ~p", [M, _E, _R]),
             kz_util:log_stacktrace(ST)
     end.

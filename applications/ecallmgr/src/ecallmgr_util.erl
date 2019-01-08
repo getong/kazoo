@@ -56,6 +56,7 @@
 -include_lib("kazoo_amqp/src/api/kapi_dialplan.hrl").
 -include_lib("kazoo_stdlib/include/kz_databases.hrl").
 -include_lib("kazoo_sip/include/kzsip_uri.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(FS_MULTI_VAR_SEP, kapps_config:get_ne_binary(?APP_NAME, <<"multivar_separator">>, <<"~">>)).
 -define(FS_MULTI_VAR_SEP_PREFIX, "^^").
@@ -996,8 +997,8 @@ build_sip_channel(#bridge_endpoint{failover=Failover}=Endpoint) ->
         _E:{'badmatch', {'error', 'not_found'}} ->
             lager:warning("Failed to build sip channel trying failover", []),
             maybe_failover(Failover);
-        _E:_R ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(_E, _R, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:warning("Failed to build sip channel (~s): ~p", [_E, _R]),
             kz_util:log_stacktrace(ST),
             {'error', 'invalid'}

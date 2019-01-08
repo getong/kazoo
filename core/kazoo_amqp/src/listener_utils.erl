@@ -13,6 +13,7 @@
         ]).
 
 -include("listener_types.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(DEFAULT_CALLBACK, 'handle_req').
 
@@ -126,8 +127,8 @@ init_responder(Responder) ->
         _Init ->
             lager:debug("responder ~s init: ~p", [Responder, _Init])
     catch
-        _E:_R ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(_E, _R, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:debug("responder ~s crashed: ~s: ~p", [Responder, _E, _R]),
             kz_util:log_stacktrace(ST)
     end.

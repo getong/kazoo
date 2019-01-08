@@ -49,6 +49,7 @@
         ]).
 
 -include("acdc.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(SERVER, ?MODULE).
 
@@ -679,8 +680,8 @@ clear_call_state(#state{account_id=AccountId
 -spec publish(kz_term:api_terms(), kz_amqp_worker:publish_fun()) -> 'ok'.
 publish(Req, F) ->
     try F(Req)
-    catch _E:_R ->
-            ST = erlang:get_stacktrace(),
+    catch ?EXCEPTION(_E, _R, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:debug("failed to publish message: ~p:~p", [_E, _R]),
             kz_util:log_stacktrace(ST),
             'ok'
@@ -689,8 +690,8 @@ publish(Req, F) ->
 -spec publish(kz_term:ne_binary(), kz_term:api_terms(), fun((kz_term:ne_binary(), kz_term:api_terms()) -> 'ok')) -> 'ok'.
 publish(Q, Req, F) ->
     try F(Q, Req)
-    catch _E:_R ->
-            ST = erlang:get_stacktrace(),
+    catch ?EXCEPTION(_E, _R, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:debug("failed to publish message to ~s: ~p:~p", [Q, _E, _R]),
             kz_util:log_stacktrace(ST),
             'ok'

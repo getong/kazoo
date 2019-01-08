@@ -54,6 +54,7 @@
 
 -include("crossbar.hrl").
 -include_lib("kazoo/include/kz_system_config.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -type input_term() :: atom() | string() | kz_term:ne_binary().
 
@@ -408,8 +409,8 @@ create_account(AccountName, Realm, Username, Password)
     try create_account_and_user(Account, User) of
         {'ok', _Context} -> 'ok'
     catch
-        Type:Reason ->
-            log_error(Type, Reason, erlang:get_stacktrace(), AccountName)
+        ?EXCEPTION(Type, Reason, Stacktrace) ->
+            log_error(Type, Reason, ?GET_STACK(Stacktrace), AccountName)
     end;
 create_account(AccountName, Realm, Username, Password) ->
     create_account(kz_term:to_binary(AccountName)

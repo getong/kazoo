@@ -11,6 +11,7 @@
 -export([delete/1]).
 
 -include("knm.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(ADDRESS_ID, <<"address_id">>).
 
@@ -170,8 +171,8 @@ assign_address(Number, AddressId) ->
                     {'error', reason(Rep)}
             end
     catch
-        _T:E ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(_T, E, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:error("~p ~p", [_T, E]),
             kz_util:log_stacktrace(ST),
             {'error', kz_term:to_binary(E)}

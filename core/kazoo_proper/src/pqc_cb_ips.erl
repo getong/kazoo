@@ -40,6 +40,7 @@
 
 -include_lib("proper/include/proper.hrl").
 -include("kazoo_proper.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -record('dedicated', {ip :: kz_term:api_ne_binary()
                      ,host :: kz_term:api_ne_binary()
@@ -334,8 +335,8 @@ seq() ->
         lager:info("finished running IPs test")
 
     catch
-        _E:_R ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(_E, _R, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             ?INFO("failed ~s: ~p", [_E, _R]),
             [?INFO("st: ~p", [S]) || S <- ST]
     after
@@ -525,8 +526,8 @@ correct() ->
                                     ,aggregate(command_names(Cmds), Result =:= 'ok')
                                     )
                    catch
-                       _E:_R ->
-                           ST = erlang:get_stacktrace(),
+                       ?EXCEPTION(_E, _R, Stacktrace) ->
+                           ST = ?GET_STACK(Stacktrace),
                            io:format("exception running commands: ~s:~p~n", [_E, _R]),
                            [io:format("~p~n", [S]) || S <- ST],
                            cleanup(),

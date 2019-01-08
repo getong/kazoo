@@ -101,7 +101,7 @@ dep_ecsv = git https://github.com/lazedo/ecsv ecsv-1
 dep_reloader = git https://github.com/lazedo/reloader v0.1
 
 ### build
-dep_parse_trans = git https://github.com/lazedo/parse_trans
+dep_parse_trans = git https://github.com/uwiger/parse_trans
 
 dep_horse = git https://github.com/ninenines/horse
 

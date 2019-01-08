@@ -14,6 +14,7 @@
 
 -include_lib("kazoo_ast/include/kz_ast.hrl").
 -include_lib("kazoo_stdlib/include/kz_types.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 %% define the callback function for the various options
 
@@ -124,8 +125,8 @@ fold_over_module(Module, Config0, Routines) ->
                    ,Routines
                    )
     catch
-        _E:R ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(_E, R, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             io:format("error processing ~s: '~s': ~p~n", [Module, _E, R]),
             [io:format("~p~n", [S]) || S <- ST],
             throw({'error', Module, R})

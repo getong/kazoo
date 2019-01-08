@@ -21,6 +21,7 @@
         ]).
 
 -include("ecallmgr.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(RESPONDERS, [{{?MODULE, 'handle_dial_req'}
                      ,[{<<"conference">>, <<"command">>}]
@@ -491,8 +492,8 @@ get_control_queue(CtlPid) ->
         'exit':{'timeout', {_M, _F, _A}} ->
             lager:info("control proc ~p timed out getting control queue"),
             'undefined';
-        _E:_R ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(_E, _R, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:debug("failed to get queue ~s: ~p", [_E, _R]),
             kz_util:log_stacktrace(ST),
             timer:sleep(?MILLISECONDS_IN_SECOND),

@@ -21,6 +21,7 @@
 -export([register_views/0]).
 
 -include("teletype.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(RECEIPT_FORMAT, " ~4.s | ~45.s | ~-45.s | ~-30.s | ~-30.s | ~-20.s~n").
 
@@ -98,9 +99,9 @@ restore_system_template(TemplateId) ->
     try Mod:init() of
         'ok' -> io:format("  finished~n")
     catch
-        _E:_T ->
+        ?EXCEPTION(_E, _T, Stacktrace) ->
             io:format("  crashed for reason ~p:~p ~n", [_E, _T]),
-            ST = erlang:get_stacktrace(),
+            ST = ?GET_STACK(Stacktrace),
             kz_util:log_stacktrace(ST),
             io:format("St: ~p~n~n", [ST])
 
@@ -203,8 +204,8 @@ start_module(Module) when is_atom(Module) ->
     try Module:init() of
         _ -> maybe_add_module_to_autoload(Module)
     catch
-        _Type:Reason ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(_Type, Reason, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:error("failed to start teletype module ~s with reason: ~s ~p"
                        ,[Module, _Type, Reason]
                        ),

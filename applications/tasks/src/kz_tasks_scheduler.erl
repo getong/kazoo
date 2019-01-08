@@ -40,6 +40,7 @@
 -include("tasks.hrl").
 -include_lib("kazoo_tasks/include/task_fields.hrl").
 -include_lib("kazoo_stdlib/include/kazoo_json.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(SERVER, {'via', 'kz_globals', ?MODULE}).
 
@@ -180,8 +181,8 @@ try_to_salvage_output(TaskId=?NE_BINARY) ->
 
 try_maybe_strip_columns(Columns, CSVPath) ->
     try maybe_strip_columns(Columns, CSVPath)
-    catch _E:_R ->
-            ST = erlang:get_stacktrace(),
+    catch ?EXCEPTION(_E, _R, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:warning("stripping empty columns failed: ~p:~p", [_E, _R]),
             kz_util:log_stacktrace(ST)
     end.

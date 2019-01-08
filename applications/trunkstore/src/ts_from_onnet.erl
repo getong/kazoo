@@ -16,6 +16,7 @@
 
 -include("ts.hrl").
 -include_lib("kazoo_amqp/include/kapi_offnet_resource.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(SERVER, ?MODULE).
 
@@ -158,8 +159,8 @@ onnet_data(CallID, AccountId, FromUser, ToDID, Options, State) ->
         lager:debug("we know how to route this call, sending park route response"),
         send_park(State, Command)
     catch
-        _A:_B ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(_A, _B, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:info("exception ~p:~p", [_A, _B]),
             kz_util:log_stacktrace(ST),
             ts_callflow:send_hangup(State)

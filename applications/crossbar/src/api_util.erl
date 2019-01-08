@@ -44,6 +44,7 @@
         ]).
 
 -include("crossbar.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(MAX_UPLOAD_SIZE, kapps_config:get_integer(?CONFIG_CAT, <<"max_upload_size">>, 8000000)). %% limit the whole payload/file size
 -define(READ_BODY_LENGTH, 8000000). %% read body in 8MB chunks
@@ -222,8 +223,8 @@ get_req_data(Context, Req1, ContentType, QS) ->
 maybe_extract_multipart(Context, Req0, QS) ->
     try extract_multipart(Context, Req0, QS)
     catch
-        _E:_R ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(_E, _R, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:debug("failed to extract multipart ~s: ~p", [_E, _R]),
             kz_util:log_stacktrace(ST),
             handle_failed_multipart(Context, Req0, QS)

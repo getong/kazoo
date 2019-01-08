@@ -25,6 +25,7 @@
 
 -include_lib("kazoo_ast/include/kz_ast.hrl").
 -include_lib("kazoo_stdlib/include/kz_types.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(DEBUG(_Fmt, _Args), 'ok').
 %%-define(DEBUG(Fmt, Args), io:format([$~, $p, $  | Fmt], [?LINE | Args])).
@@ -340,8 +341,8 @@ remote_calls_from_module(Module, Acc, {M, AST}) ->
     try remote_calls_from_functions(Fs, Acc) of
         Modules -> ?DEBUG("  ~p~n", [Module]), lists:delete(M, Modules)
     catch
-        _E:R ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(_E, R, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             io:format("process module '~s' failed: ~s: ~p~n", [Module, _E, R]),
             [io:format("st: ~p~n", [S]) || S <- ST],
             ?DEBUG("~s failed: ~s ~r~n~p~n", [Module, _E, R, ST]),

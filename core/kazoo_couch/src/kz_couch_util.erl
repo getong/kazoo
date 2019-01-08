@@ -23,6 +23,7 @@
 
 -include("kz_couch.hrl").
 -include_lib("kazoo_amqp/include/kapi_conf.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 %%------------------------------------------------------------------------------
 %% @doc Send the query function in an anon fun with arity 0; if it returns 504, retry
@@ -75,8 +76,8 @@ retry504s(Fun, Cnt) ->
             kazoo_stats:increment_counter(<<"bigcouch-other-error">>),
             {'error', format_error(Other)};
         OK -> OK
-    catch _E:_R ->
-            ST = erlang:get_stacktrace(),
+    catch ?EXCEPTION(_E, _R, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:debug("exception running fun: ~p:~p", [_E, _R]),
             kz_util:log_stacktrace(ST),
             kazoo_stats:increment_counter(<<"bigcouch-other-error">>),

@@ -35,6 +35,7 @@
 -include_lib("proper/include/proper.hrl").
 -include("kazoo_proper.hrl").
 -include_lib("kazoo_stdlib/include/kz_databases.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(RATE_ID, <<"XX-1222">>).
 -define(RATEDECK_NAMES, [?KZ_RATES_DB, <<"custom">>]).
@@ -244,8 +245,8 @@ correct() ->
                                     ,aggregate(command_names(Cmds), Result =:= 'ok')
                                     )
                    catch
-                       _E:_R ->
-                           ST = erlang:get_stacktrace(),
+                       ?EXCEPTION(_E, _R, Stacktrace) ->
+                           ST = ?GET_STACK(Stacktrace),
                            io:format("exception running commands: ~s:~p~n", [_E, _R]),
                            [io:format("~p~n", [S]) || S <- ST],
                            _ = cleanup(),

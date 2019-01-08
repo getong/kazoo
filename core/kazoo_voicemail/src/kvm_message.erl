@@ -18,6 +18,7 @@
         ]).
 
 -include("kz_voicemail.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -export_type([vm_folder/0]).
 
@@ -752,9 +753,9 @@ prepend_and_notify(Call, ForwardId, Metadata, SrcBoxId, Props) ->
             UpdateFuns = [fun(J) -> kz_json:set_value(<<"forward_join_error">>, ErrorMessage, J) end],
             forward_to_vmbox(Call, Metadata, SrcBoxId, Props, UpdateFuns)
     catch
-        _T:_E ->
+        ?EXCEPTION(_T, _E, Stacktrace) ->
             remove_malform_vm(Call, ForwardId),
-            ST = erlang:get_stacktrace(),
+            ST = ?GET_STACK(Stacktrace),
             ErrorMessage = kz_term:to_binary(io_lib:format("exception occurred during prepend and joining audio files: ~p:~p", [_T, _E])),
             lager:error(ErrorMessage),
             kz_util:log_stacktrace(ST),

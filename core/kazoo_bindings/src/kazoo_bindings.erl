@@ -70,6 +70,7 @@
         ]).
 
 -include("kazoo_bindings.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(SERVER, ?MODULE).
 
@@ -649,16 +650,16 @@ fold_bind_results([#kz_responder{module=M
         Pay1 ->
             fold_bind_results(Responders, [Pay1|Tokens], Route, RespondersLen, ReRunResponders)
     catch
-        'error':'function_clause' ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION('error', 'function_clause', Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             log_function_clause(M, F, length(Payload), ST),
             fold_bind_results(Responders, Payload, Route, RespondersLen, ReRunResponders);
-        'error':'undef' ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION('error', 'undef', Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             log_undefined(M, F, length(Payload), ST),
             fold_bind_results(Responders, Payload, Route, RespondersLen, ReRunResponders);
-        _T:_E ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(_T, _E, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:error("excepted: ~s: ~p", [_T, _E]),
             kz_util:log_stacktrace(ST),
             fold_bind_results(Responders, Payload, Route, RespondersLen, ReRunResponders)
@@ -805,21 +806,21 @@ apply_map_responder(#kz_responder{module=M
     Payload = maybe_merge_payload(ResponderPayload, MapPayload),
     try apply_map_responder(M, F, Payload)
     catch
-        'error':'function_clause' ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION('error', 'function_clause', Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             maybe_log_function_clause(M, F, Payload, ST),
             {'EXIT', {'function_clause', ST}};
-        'error':'undef' ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION('error', 'undef', Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             maybe_log_undefined(M, F, Payload, ST),
             {'EXIT', {'undef', ST}};
-        'error':Exp ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION('error', Exp, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:error("exception: error:~p", [Exp]),
             kz_util:log_stacktrace(ST),
             {'EXIT', {Exp, ST}};
-        _Type:Exp ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(_Type, Exp, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:error("exception: ~s:~p", [_Type, Exp]),
             kz_util:log_stacktrace(ST),
             {'EXIT', Exp}

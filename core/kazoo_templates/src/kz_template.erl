@@ -7,6 +7,7 @@
 -module(kz_template).
 
 -include("kazoo_template.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -export([compile/2, compile/3,
          render/2, render/3, render/4
@@ -103,13 +104,13 @@ render_template(Module, TemplateData) ->
             ?LOG_DEBUG("failed to render template: ~p", [_E]),
             E
     catch
-        'error':'undef' ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION('error', 'undef', Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             ?LOG_DEBUG("something in the template ~s is undefined", [Module]),
             kz_util:log_stacktrace(ST),
             {'error', 'undefined'};
-        _E:R ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION(_E, R, Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             ?LOG_DEBUG("crashed rendering template ~s: ~s: ~p", [Module, _E, R]),
             kz_util:log_stacktrace(ST),
             {'error', R}

@@ -116,6 +116,7 @@
         ]).
 
 -include("kz_documents.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -type doc() :: kz_json:object().
 -export_type([doc/0]).
@@ -1523,8 +1524,8 @@ validate_account_schema(ParentId, AccountId, Doc, ValidationErrors, SchemaJObj) 
             lager:error("validation errors but not strictly validating, trying to fix request"),
             maybe_fix_js_types(ParentId, AccountId, Doc, ValidationErrors, SchemaErrors, SchemaJObj)
     catch
-        'error':'function_clause' ->
-            ST = erlang:get_stacktrace(),
+        ?EXCEPTION('error', 'function_clause', Stacktrace) ->
+            ST = ?GET_STACK(Stacktrace),
             lager:error("function clause failure"),
             kz_util:log_stacktrace(ST),
             throw({'system_error', <<"validation failed to run on the server">>})

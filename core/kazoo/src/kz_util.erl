@@ -69,8 +69,13 @@
 -include_lib("kazoo_stdlib/include/kz_log.hrl").
 -include_lib("kazoo_stdlib/include/kz_databases.hrl").
 -include_lib("kazoo/include/kz_api_literals.hrl").
+-include_lib("kazoo_stdlib/include/exception.hrl").
 
 -define(KAZOO_VERSION_CACHE_KEY, {?MODULE, 'kazoo_version'}).
+
+-ifdef(OTP_RELEASE).
+-compile({nowarn_deprecated_function, [{erlang, get_stacktrace, 0}]}).
+-endif.
 
 -export_type([account_format/0]).
 
